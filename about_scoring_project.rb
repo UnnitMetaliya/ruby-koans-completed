@@ -30,7 +30,49 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
+
+  # initialize total and count for each number and variation
+  total = 0
+  count = [0, 0, 0, 0, 0, 0]
+
+  # for each roll, analyzing the patterns of equal/nonequal numbers
+  dice.each do |die|
+    count[ die - 1 ] += 1
+  end
+
+  # looping the elements and count points for different scenarios
+  count.each_with_index do |count, index|
+    if count == 3
+      total = doTriples( index + 1, total )
+    elsif count < 3
+      total = doSingles( index + 1, count, total )
+    elsif count > 3
+      total = doTriples( index + 1, total )
+      total = doSingles( index + 1, count % 3, total )
+    end
+  end
+  # return the new point total
+  total
+
+end
+
+# helper function to do triples. Three ones in one roll.
+def doTriples( number, total )
+  if number == 1
+    total += 1000
+  else
+    total += ( number ) * 100
+  end
+  total
+end
+
+def doSingles( number, count, total )
+  if number == 1
+    total += ( 100 * count )
+  elsif number == 5
+    total += ( 50 * count )
+  end
+  total
 end
 
 class AboutScoringProject < Neo::Koan
